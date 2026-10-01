@@ -1,0 +1,31 @@
+# Dependências
+node_modules
+
+# Next.js / build
+.next
+out
+build
+next-env.d.ts
+*.tsbuildinfo
+
+# Variáveis de ambiente — NUNCA versionar segredos (Supabase, Mercado Pago, Resend)
+.env
+.env*
+!.env.example
+
+# Vercel
+.vercel
+
+# Logs / SO
+*.log
+.DS_Store
+
+# Documentos de negócio (não versionar no repositório de código)
+CONTRATO-DADOS*
+PROPOSTA.*
+DOCUMENTACAO.*
+
+# Scripts de dev/QA e screenshots: não fazem parte do produto e alguns contêm
+# tokens de sessão hardcoded / imagens com dados sensíveis.
+scripts/
+shots/

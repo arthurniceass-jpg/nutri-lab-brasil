@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Category {
+  PROTEINAS
+  CREATINA
+  PRE_TREINO
+  AMINOACIDOS
+  VITAMINAS
+  EMAGRECEDORES
+}
+
+enum OrderStatus {
+  PENDENTE
+  PAGO
+  ENVIADO
+  ENTREGUE
+  CANCELADO
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+model Product {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  description String
+  // Valores em centavos para evitar erro de ponto flutuante
+  priceCents  Int
+  costCents   Int        // custo usado para calcular o lucro no backend
+  category    Category
+  image       String
+  images      String[]   @default([])
+  usage       String?
+  ingredients String?
+  rating      Float      @default(5)
+  reviews     Int        @default(0)
+  stock       Int        @default(0)
+  flavor      String?
+  weight      String?
+  featured    Boolean    @default(false)
+  active      Boolean    @default(true)
+  supplierId  String?
+  supplier    Supplier?  @relation(fields: [supplierId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  orderItems  OrderItem[]
+  productReviews Review[]
+
+  @@index([category])
+  @@index([supplierId])
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerId   String?
+  customerName String
+  rating       Int
+  comment      String
+  createdAt    DateTime @default(now())
+
+  @@index([productId])
+}
+
+model StoreSettings {
+  id                   String   @id @default("singleton")
+  storeName            String   @default("NUTRI LAB BRASIL")
+  slogan               String   @default("Energia. Foco. Disciplina. Evolucao.")
+  email                String   @default("contato@nutrilab.com.br")
+  phone                String?
+  whatsapp             String?
+  instagram            String?
+  cnpj                 String?
+  address              String?
+  freeShippingCents    Int      @default(19900)
+  defaultShippingCents Int      @default(2490)
+  mpAccessToken        String?
+  pixEnabled           Boolean  @default(true)
+  cardEnabled          Boolean  @default(true)
+  boletoEnabled        Boolean  @default(true)
+  lowStockThreshold    Int      @default(12)
+  updatedAt            DateTime @updatedAt
+}
+
+model Supplier {
+  id          String   @id @default(cuid())
+  name        String
+  cnpj        String?
+  email       String?
+  phone       String?
+  contactName String?
+  city        String?
+  state       String?
+  supplies    String?  // o que fornece (texto livre)
+  notes       String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    Product[]
+}
+
+model Coupon {
+  id               String     @id @default(cuid())
+  code             String     @unique
+  type             CouponType
+  value            Int        // PERCENT: 1-100 | FIXED: centavos
+  minSubtotalCents Int        @default(0)
+  active           Boolean    @default(true)
+  maxRedemptions   Int?
+  timesRedeemed    Int        @default(0)
+  expiresAt        DateTime?
+  createdAt        DateTime   @default(now())
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  cpf          String?
+  cep          String?
+  address      String?
+  number       String?
+  complement   String?
+  neighborhood String?
+  city         String?
+  state        String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  reference     String      @unique
+  status        OrderStatus @default(PENDENTE)
+  customerId      String?
+  customer        Customer?   @relation(fields: [customerId], references: [id])
+  customerName    String
+  customerEmail   String
+  customerCpf     String?
+  shippingAddress String?
+  trackingCode    String?
+  shippingNote    String?
+  channel         String      @default("SITE") // SITE ou MANUAL (venda balcao/boca a boca)
+  paymentMethod   String?     // Dinheiro, Pix, Cartao, WhatsApp, etc. (venda manual)
+  notes           String?
+  // Snapshots em centavos
+  subtotalCents Int
+  discountCents Int         @default(0)
+  couponCode    String?
+  shippingCents Int         @default(0)
+  totalCents    Int
+  costCents     Int         // soma do custo dos itens (para lucro)
+  mpPaymentId   String?
+  mpPreferenceId String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerId])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  name        String
+  quantity    Int
+  priceCents  Int
+  costCents   Int
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}

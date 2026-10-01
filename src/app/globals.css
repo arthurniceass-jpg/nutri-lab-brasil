@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* EVENING (modo claro) */
+  :root {
+    --radius: 0.5rem;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 6%;
+    --carbon: 0 0% 96%;
+    --steel: 0 0% 92%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 38%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+  }
+
+  /* NIGHT (modo escuro) */
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --carbon: 0 0% 7%;
+    --steel: 0 0% 10%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 63%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(194, 238, 62, 0.08), transparent 40%),
+      radial-gradient(circle at 100% 0%, rgba(194, 238, 62, 0.05), transparent 35%);
+    background-attachment: fixed;
+  }
+
+  /* Foco visivel e acessivel em toda a aplicacao */
+  :focus-visible {
+    @apply outline-none ring-2 ring-lime ring-offset-2 ring-offset-background;
+  }
+
+  ::selection {
+    background: #c2ee3e;
+    color: #0a0a0a;
+  }
+
+  /* Respeita prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Cabecalho de display atletico, condensado e em italico */
+  .display {
+    @apply font-display uppercase italic tracking-tight;
+    font-style: italic;
+  }
+
+  /* Corte diagonal de assinatura (ecoa o monograma NL) */
+  .clip-nl {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 6% 100%);
+  }
+
+  .clip-nl-reverse {
+    clip-path: polygon(0 0, 94% 0, 100% 100%, 0 100%);
+  }
+
+  .clip-tag {
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+  }
+
+  /* Faixa diagonal decorativa */
+  .skew-band {
+    transform: skewY(-3deg);
+  }
+
+  /* Borda em destaque lime */
+  .lime-edge {
+    box-shadow: inset 3px 0 0 0 #c2ee3e;
+  }
+
+  .card-grain {
+    background-image: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0)
+    );
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Esconde scrollbar mantendo a rolagem (filtros horizontais) */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
