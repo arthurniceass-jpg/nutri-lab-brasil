@@ -33,7 +33,7 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap gap-4">
             <Button asChild size="lg">
-              <a href="#produtos">
+              <a href="/catalogo">
                 Ver produtos <ArrowRight className="size-5" />
               </a>
             </Button>

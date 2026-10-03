@@ -22,10 +22,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 p-4 md:p-8">
       <header>
-        <p className="font-mono text-xs uppercase tracking-widest text-lime">
+        <p className="mb-2 font-mono text-xs uppercase leading-none tracking-widest text-lime">
           Painel do proprietário
         </p>
-        <h1 className="display text-4xl text-foreground md:text-5xl">
+        <h1 className="display text-4xl leading-[1.1] text-foreground md:text-5xl">
           Visão <span className="text-lime">geral</span>
         </h1>
       </header>
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
         />
         <KpiCard
           icon={<TrendingUp className="size-5" />}
-          label="Lucro liquido"
+          label="Lucro líquido"
           value={formatBRL(kpis.lucro.valueCents)}
           sub={`Margem ${formatPercent(kpis.lucro.marginRatio)}`}
           deltaRatio={kpis.lucro.deltaRatio}

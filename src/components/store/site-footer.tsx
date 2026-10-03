@@ -36,7 +36,7 @@ export function SiteFooter({ settings }: { settings?: FooterSettings }) {
               Loja
             </h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#produtos" className="hover:text-lime">Produtos</a></li>
+              <li><a href="/catalogo" className="hover:text-lime">Produtos</a></li>
               <li><a href="#categorias" className="hover:text-lime">Categorias</a></li>
               <li><a href="#confianca" className="hover:text-lime">Por que nós</a></li>
             </ul>

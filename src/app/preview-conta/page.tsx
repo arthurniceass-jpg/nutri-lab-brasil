@@ -19,7 +19,7 @@ export default function PreviewConta() {
       <main className="container py-20">
         <p className="font-mono text-sm text-muted-foreground">
           Prévia (dev) — clique no botão “Arthur” no canto superior direito para
-          abrir o card de conta com perfil, barra de XP/nível, pedidos e sair.
+          abrir o card de conta com perfil, pedidos e sair.
         </p>
       </main>
     </div>

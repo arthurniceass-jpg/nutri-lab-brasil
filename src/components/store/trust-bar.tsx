@@ -9,7 +9,7 @@ const ITEMS = [
   {
     icon: BadgeCheck,
     title: "Produtos 100% originais",
-    desc: "Nota fiscal e procedencia",
+    desc: "Nota fiscal e procedência",
   },
   {
     icon: Truck,
@@ -25,22 +25,31 @@ const ITEMS = [
 
 export function TrustBar() {
   return (
-    <section id="confianca" className="border-b border-border bg-carbon">
-      <div className="container grid grid-cols-2 gap-px overflow-hidden lg:grid-cols-4">
-        {ITEMS.map(({ icon: Icon, title, desc }) => (
-          <div
-            key={title}
-            className="flex items-start gap-3 px-4 py-6 lime-edge"
-          >
-            <Icon className="mt-0.5 size-6 shrink-0 text-lime" aria-hidden />
-            <div>
-              <p className="text-sm font-bold uppercase leading-tight tracking-wide text-foreground">
+    <section
+      id="confianca"
+      className="flex min-h-[70vh] scroll-mt-16 items-center border-b border-border bg-carbon py-16"
+    >
+      <div className="container">
+        <p className="font-mono text-xs uppercase leading-none tracking-widest text-lime">
+          Por que nós
+        </p>
+        <h2 className="display mt-2 text-4xl text-foreground md:text-5xl">
+          Compre com <span className="text-lime">confiança</span>
+        </h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {ITEMS.map(({ icon: Icon, title, desc }) => (
+            <div
+              key={title}
+              className="rounded-lg border border-border bg-card p-6 lime-edge"
+            >
+              <Icon className="size-9 text-lime" aria-hidden />
+              <p className="mt-5 text-base font-bold uppercase leading-tight tracking-wide text-foreground">
                 {title}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

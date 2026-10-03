@@ -78,6 +78,13 @@
     font-style: italic;
   }
 
+  /* Rótulo (eyebrow) acima de título display: evita colar/sobrepor e
+     compensa o recuo do itálico para o título alinhar com o rótulo */
+  p + .display {
+    margin-top: 0.5rem;
+    margin-left: -0.12em;
+  }
+
   /* Corte diagonal de assinatura (ecoa o monograma NL) */
   .clip-nl {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 6% 100%);

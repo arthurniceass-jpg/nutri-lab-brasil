@@ -52,7 +52,7 @@ export default async function RelatoriosPage() {
 
       <section className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <Summary label="Faturamento (12M)" value={formatBRL(totalFat)} />
-        <Summary label="Lucro liquido (12M)" value={formatBRL(totalLucro)} />
+        <Summary label="Lucro líquido (12M)" value={formatBRL(totalLucro)} />
         <Summary label="Margem média" value={formatPercent(margem)} />
         <Summary label="Pedidos (12M)" value={String(totalPedidos)} />
       </section>

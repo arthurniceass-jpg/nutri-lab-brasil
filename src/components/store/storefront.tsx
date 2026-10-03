@@ -39,7 +39,7 @@ export function Storefront({
     );
 
   return (
-    <section id="produtos" className="container py-16">
+    <section id="produtos" className="container scroll-mt-20 py-16">
       {/* Banner de objetivo */}
       {goal && (
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-lime/40 bg-lime/5 p-4">

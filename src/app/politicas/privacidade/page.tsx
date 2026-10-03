@@ -6,7 +6,7 @@ export default function PrivacidadePage() {
   return (
     <LegalLayout title="Política de privacidade">
       <p>
-        Sua privacidade e importante. Esta política explica como tratamos seus
+        Sua privacidade é importante. Esta política explica como tratamos seus
         dados, em conformidade com a LGPD (Lei 13.709/2018).
       </p>
       <h2>Dados que coletamos</h2>

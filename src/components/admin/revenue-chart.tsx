@@ -114,7 +114,7 @@ export function RevenueChart({ monthly }: { monthly: MonthPoint[] }) {
 
       <div className="mt-3 flex gap-6">
         <Legend color="#C2EE3E" label="Faturamento" />
-        <Legend color="#7FB800" label="Lucro liquido" />
+        <Legend color="#7FB800" label="Lucro líquido" />
       </div>
     </Card>
   );
