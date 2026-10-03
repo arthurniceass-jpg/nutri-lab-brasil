@@ -23,7 +23,7 @@ export function Hero() {
           <h1 className="display text-5xl leading-[0.9] text-foreground sm:text-6xl md:text-7xl lg:text-8xl">
             Treine como
             <br />
-            um <span className="text-lime">laboratorio</span>
+            um <span className="text-lime">laboratório</span>
           </h1>
 
           <p className="mt-6 max-w-md text-balance text-lg text-muted-foreground">
