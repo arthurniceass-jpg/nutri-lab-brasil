@@ -53,7 +53,7 @@ export async function POST(req: Request) {
         channel: "MANUAL",
         paymentMethod: b.paymentMethod ? String(b.paymentMethod).trim() : null,
         notes: b.notes ? String(b.notes).trim() : null,
-        customerName: String(b.customerName ?? "").trim() || "Venda balcao",
+        customerName: String(b.customerName ?? "").trim() || "Venda balcão",
         customerEmail: String(b.customerEmail ?? "").trim() || "-",
         subtotalCents,
         discountCents,

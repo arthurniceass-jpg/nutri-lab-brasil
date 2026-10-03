@@ -60,7 +60,7 @@ function StockRow({
     product.stock <= 0
       ? { label: "Esgotado", variant: "danger" as const }
       : product.stock <= 5
-        ? { label: "Critico", variant: "danger" as const }
+        ? { label: "Crítico", variant: "danger" as const }
         : product.stock <= LOW
           ? { label: "Baixo", variant: "warning" as const }
           : { label: "Em estoque", variant: "success" as const };
