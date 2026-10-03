@@ -26,7 +26,7 @@ export function KpiCard({
   const id = `spark-${label.replace(/\s+/g, "-")}`;
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border bg-card p-5 card-grain">
+    <div className="relative flex flex-col overflow-hidden rounded-lg border border-border bg-card p-5 card-grain">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <div className="flex size-9 items-center justify-center rounded-md bg-lime/10 text-lime">
@@ -53,16 +53,11 @@ export function KpiCard({
         </span>
       </div>
 
-      <div className="mt-4 flex items-end justify-between gap-2">
+      <div className="mt-auto flex items-end pt-5 justify-between gap-2">
         <div>
           <p className="display text-3xl leading-none text-foreground">
             {value}
           </p>
-          {sub && (
-            <p className="mt-1 font-mono text-xs text-muted-foreground">
-              {sub}
-            </p>
-          )}
         </div>
         <div className="h-12 w-24">
           <ResponsiveContainer width="100%" height="100%">
@@ -87,8 +82,9 @@ export function KpiCard({
         </div>
       </div>
 
-      <p className="mt-2 font-mono text-[11px] text-muted-foreground/70">
-        vs. mês anterior
+      <p className="mt-3 flex items-center justify-between gap-2 font-mono text-[11px] text-muted-foreground/70">
+        <span>vs. mês anterior</span>
+        {sub && <span className="text-muted-foreground">{sub}</span>}
       </p>
     </div>
   );

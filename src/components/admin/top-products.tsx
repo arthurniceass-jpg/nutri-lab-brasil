@@ -12,7 +12,7 @@ export function TopProducts({ items }: { items: Item[] }) {
         Mais <span className="text-lime">vendidos</span>
       </h2>
       <p className="mb-4 font-mono text-xs text-muted-foreground">
-        Por faturamento no periodo
+        Por faturamento no período
       </p>
 
       <ol className="space-y-4">

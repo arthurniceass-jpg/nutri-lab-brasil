@@ -128,7 +128,7 @@ export function CartSheet() {
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
               <ShoppingBag className="size-12 text-muted-foreground/40" />
               <p className="font-mono text-sm text-muted-foreground">
-                Seu carrinho esta vazio.
+                Seu carrinho está vazio.
               </p>
             </div>
           ) : (

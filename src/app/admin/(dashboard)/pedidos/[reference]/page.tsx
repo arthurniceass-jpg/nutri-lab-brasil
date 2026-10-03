@@ -135,7 +135,7 @@ export default async function PedidoDetalhePage({
               </dd>
             </div>
             <Row label="Custo" value={formatBRL(order.costCents)} muted />
-            <Row label="Lucro liquido" value={formatBRL(lucroCents)} lime />
+            <Row label="Lucro líquido" value={formatBRL(lucroCents)} lime />
           </dl>
         </Card>
 

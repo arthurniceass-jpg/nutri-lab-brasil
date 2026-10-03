@@ -81,7 +81,7 @@ export function CategoryDonut({ data }: { data: Slice[] }) {
           ))}
           {data.length === 0 && (
             <li className="font-mono text-xs text-muted-foreground">
-              Sem vendas no periodo.
+              Sem vendas no período.
             </li>
           )}
         </ul>

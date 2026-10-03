@@ -9,7 +9,7 @@ export default function ErroPage() {
       <Logo className="mb-10" />
       <XCircle className="size-20 text-destructive" />
       <h1 className="display mt-6 text-4xl text-foreground md:text-5xl">
-        Pagamento <span className="text-destructive">não concluido</span>
+        Pagamento <span className="text-destructive">não concluído</span>
       </h1>
       <p className="mt-3 max-w-md text-muted-foreground">
         Algo deu errado no pagamento. Seu carrinho continua salvo. Tente

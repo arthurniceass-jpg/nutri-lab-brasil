@@ -29,7 +29,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
             className="hidden items-center gap-8 md:flex"
           >
             <a
-              href="/#produtos"
+              href="/catalogo"
               className="text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-lime"
             >
               Produtos
@@ -65,7 +65,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
                     {CATEGORIES.map((c) => (
                       <a
                         key={c.key}
-                        href={`/?categoria=${c.key}#produtos`}
+                        href={`/catalogo?categoria=${c.key}`}
                         onClick={() => setCatsOpen(false)}
                         role="menuitem"
                         className="block border-b border-border/50 px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors last:border-0 hover:bg-steel hover:text-lime"
@@ -110,7 +110,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
                     {GOALS.map((g) => (
                       <a
                         key={g.key}
-                        href={`/?objetivo=${g.key}#produtos`}
+                        href={`/catalogo?objetivo=${g.key}`}
                         onClick={() => setGoalsOpen(false)}
                         role="menuitem"
                         className="block border-b border-border/50 px-4 py-3 transition-colors last:border-0 hover:bg-steel"
@@ -182,7 +182,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
             className="fixed inset-x-0 top-16 z-50 max-h-[calc(100vh-4rem)] animate-fade-up overflow-y-auto border-b border-border bg-background shadow-2xl"
           >
             <div className="container flex flex-col py-3">
-              <a href="/#produtos" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
+              <a href="/catalogo" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
                 Produtos
               </a>
               <a href="/#confianca" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
@@ -195,7 +195,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
               {CATEGORIES.map((c) => (
                 <a
                   key={c.key}
-                  href={`/?categoria=${c.key}#produtos`}
+                  href={`/catalogo?categoria=${c.key}`}
                   onClick={() => setMobileOpen(false)}
                   className="py-2 text-sm font-bold uppercase tracking-wide text-foreground hover:text-lime"
                 >
@@ -209,7 +209,7 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
               {GOALS.map((g) => (
                 <a
                   key={g.key}
-                  href={`/?objetivo=${g.key}#produtos`}
+                  href={`/catalogo?objetivo=${g.key}`}
                   onClick={() => setMobileOpen(false)}
                   className="border-b border-border/40 py-2.5 last:border-0"
                 >
