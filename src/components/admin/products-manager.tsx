@@ -12,6 +12,8 @@ import {
   Pencil,
   Star,
   AlertTriangle,
+  Download,
+  Eraser,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,6 +77,8 @@ export function ProductsManager({
   const [confirmId, setConfirmId] = React.useState<string | null>(null);
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [notice, setNotice] = React.useState("");
+  const [importing, setImporting] = React.useState(false);
+  const [removing, setRemoving] = React.useState(false);
 
   function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -176,6 +180,56 @@ export function ProductsManager({
     }
   }
 
+  async function removeOld() {
+    if (
+      !window.confirm(
+        "Remover TODOS os produtos que não são do Catálogo Relâmpago? Os que já têm pedidos serão apenas desativados (somem da loja, mas o histórico fica). Os sem pedidos serão EXCLUÍDOS de vez, sem desfazer.",
+      )
+    ) {
+      return;
+    }
+    setRemoving(true);
+    try {
+      const res = await fetch("/api/admin/produtos/remover-antigos", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice(data.error ?? "Não foi possível remover.");
+      } else {
+        setNotice(
+          `Produtos antigos removidos: ${data.deleted} excluídos e ${data.deactivated} desativados (tinham pedidos). Ficaram os ${data.kept} do catálogo relâmpago.`,
+        );
+        router.refresh();
+      }
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  async function importCatalogo() {
+    if (
+      !window.confirm(
+        "Importar os 20 produtos do Catálogo Relâmpago (pré-venda)? Estoque 10 e custo R$ 0,00 em cada um (preencha o custo real depois). Produtos que já existem só têm texto e foto atualizados (preço, custo e estoque não mudam).",
+      )
+    ) {
+      return;
+    }
+    setImporting(true);
+    try {
+      const res = await fetch("/api/admin/produtos/importar", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice(data.error ?? "Não foi possível importar.");
+      } else {
+        setNotice(
+          `Catálogo importado: ${data.created} novos e ${data.updated} atualizados (texto e foto). Lembre de preencher o custo dos novos.`,
+        );
+        router.refresh();
+      }
+    } finally {
+      setImporting(false);
+    }
+  }
+
   return (
     <div className="space-y-6 p-4 md:p-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -188,17 +242,27 @@ export function ProductsManager({
             {products.length} cadastrados
           </p>
         </div>
-        <Button onClick={() => (showForm ? setShowForm(false) : openCreate())}>
-          {showForm ? (
-            <>
-              <X className="size-4" /> Fechar
-            </>
-          ) : (
-            <>
-              <Plus className="size-4" /> Novo produto
-            </>
-          )}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={importCatalogo} disabled={importing}>
+            {importing ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            Importar catálogo relâmpago
+          </Button>
+          <Button variant="outline" onClick={removeOld} disabled={removing}>
+            {removing ? <Loader2 className="size-4 animate-spin" /> : <Eraser className="size-4" />}
+            Remover produtos antigos
+          </Button>
+          <Button onClick={() => (showForm ? setShowForm(false) : openCreate())}>
+            {showForm ? (
+              <>
+                <X className="size-4" /> Fechar
+              </>
+            ) : (
+              <>
+                <Plus className="size-4" /> Novo produto
+              </>
+            )}
+          </Button>
+        </div>
       </header>
 
       {notice && (
