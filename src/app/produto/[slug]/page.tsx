@@ -255,7 +255,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h3 className="mb-1 text-sm font-bold uppercase tracking-wide text-foreground">
         {title}
       </h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">{children}</p>
+      <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{children}</p>
     </div>
   );
 }
