@@ -2,6 +2,7 @@ import { CartProvider } from "@/components/providers/cart-provider";
 import { SiteHeader } from "@/components/store/site-header";
 import { Hero } from "@/components/store/hero";
 import { TrustBar } from "@/components/store/trust-bar";
+import { ShakerPromo } from "@/components/store/shaker-promo";
 import { Storefront } from "@/components/store/storefront";
 import { CartSheet } from "@/components/store/cart-sheet";
 import { SiteFooter } from "@/components/store/site-footer";
@@ -32,6 +33,7 @@ export default async function HomePage({
       <main id="conteudo">
         <Hero />
         <TrustBar />
+        <ShakerPromo />
         <Storefront
           products={products}
           initialObjetivo={objetivo ?? null}

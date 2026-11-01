@@ -131,3 +131,30 @@
     scrollbar-width: none;
   }
 }
+
+
+/* Shaker Lab (/shaker) */
+.shk-body { transform-box: fill-box; transform-origin: 50% 60%; }
+.shk-body.shk-shaking { animation: shk-shake 0.16s ease-in-out infinite; }
+@keyframes shk-shake {
+  0%, 100% { transform: rotate(-9deg) translateY(-3px); }
+  50% { transform: rotate(9deg) translateY(3px); }
+}
+.shk-pow, .shk-mix, .shk-wat { transition: opacity 0.9s ease, fill 0.9s ease; }
+.shk-mix { opacity: 0; }
+.shk-mixed .shk-mix { opacity: 0.96; }
+.shk-mixed .shk-pow, .shk-mixed .shk-wat { opacity: 0; }
+.shk-bub { animation: shk-up 2.6s ease-in forwards; }
+@keyframes shk-up {
+  from { transform: translateY(0); opacity: 0.9; }
+  to { transform: translateY(-190px); opacity: 0; }
+}
+.shk-idle { animation: shk-bob 4s ease-in-out infinite; }
+@keyframes shk-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shk-body.shk-shaking, .shk-idle, .shk-bub { animation: none; }
+  .shk-pow, .shk-mix, .shk-wat { transition: none; }
+}

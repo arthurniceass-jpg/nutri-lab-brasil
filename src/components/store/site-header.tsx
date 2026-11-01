@@ -129,6 +129,12 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
             </div>
 
             <a
+              href="/shaker"
+              className="text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-lime"
+            >
+              Monte seu shaker
+            </a>
+            <a
               href="/#confianca"
               className="text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-lime"
             >
@@ -184,6 +190,9 @@ export function SiteHeader({ customerName }: { customerName?: string | null }) {
             <div className="container flex flex-col py-3">
               <a href="/catalogo" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
                 Produtos
+              </a>
+              <a href="/shaker" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
+                Monte seu shaker
               </a>
               <a href="/#confianca" onClick={() => setMobileOpen(false)} className="py-2.5 text-sm font-semibold uppercase tracking-wide text-foreground hover:text-lime">
                 Por que nós

@@ -38,7 +38,8 @@ export function SiteFooter({ settings }: { settings?: FooterSettings }) {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/catalogo" className="hover:text-lime">Produtos</a></li>
               <li><a href="#categorias" className="hover:text-lime">Categorias</a></li>
-              <li><a href="#confianca" className="hover:text-lime">Por que nós</a></li>
+              <li><a href="/shaker" className="hover:text-lime">Monte seu shaker</a></li>
+              <li><a href="/#confianca" className="hover:text-lime">Por que nós</a></li>
             </ul>
           </div>
           <div>
