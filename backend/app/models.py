@@ -106,3 +106,14 @@ class ShakerStack(Base):
     customer_id: Mapped[str | None] = mapped_column(String, nullable=True)
     views: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
+class RateHit(Base):
+    """Tabela do Python: tentativas registradas pelo limitador (vale em qualquer instância/servidor).
+
+    Guarda só um hash da chave (IP/e-mail), nunca o dado em si.
+    """
+    __tablename__ = "rate_hits"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    bucket: Mapped[str] = mapped_column(String(80), index=True)
+    ts: Mapped[datetime] = mapped_column(DateTime, index=True, default=utcnow)

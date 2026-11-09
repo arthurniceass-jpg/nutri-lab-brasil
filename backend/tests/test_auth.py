@@ -70,7 +70,7 @@ def test_register_then_login_flow(client, db_session):
     assert client.get("/api/sessao").json() == {"role": "CUSTOMER", "name": "Ana Souza", "email": "ana@exemplo.com"}
 
 
-def test_register_rejects_bad_input(client):
+def test_register_rejects_bad_input(client, db_session):
     cases = [
         ({**CADASTRO, "password": "123456"}, "8 caracteres"),
         ({**CADASTRO, "password": "senha123"}, "comum"),
@@ -81,7 +81,7 @@ def test_register_rejects_bad_input(client):
         ({"name": "", "email": "", "password": ""}, "Preencha"),
     ]
     for payload, expected in cases:
-        ratelimit.reset_all_limiters()  # cada caso é independente do limite de cadastros por hora
+        ratelimit.reset_all_limiters(db_session)  # cada caso é independente do limite de cadastros por hora
         r = client.post("/api/conta/registrar", json=payload)
         assert r.status_code == 400 and expected in r.json()["error"], (payload, r.json())
 
@@ -124,3 +124,29 @@ def test_api_security_headers_present(client):
     assert r.headers["x-content-type-options"] == "nosniff"
     assert r.headers["x-frame-options"] == "DENY"
     assert r.headers["cache-control"] == "no-store"
+
+
+# ---------- força bruta com IP falsificado ----------
+def test_spoofed_forwarded_header_does_not_dodge_the_limit(client):
+    """Sem TRUST_PROXY, o cabeçalho X-Forwarded-For é ignorado: trocar de 'IP' não reinicia o limite."""
+    for i in range(5):
+        r = client.post("/api/auth", json={**OWNER, "password": "chute"}, headers={"x-forwarded-for": f"9.9.9.{i}"})
+        assert r.status_code == 401
+    r = client.post("/api/auth", json={**OWNER, "password": "chute"}, headers={"x-forwarded-for": "1.1.1.1"})
+    assert r.status_code == 429
+
+
+def test_account_limit_stops_attacker_who_rotates_real_ips(client, monkeypatch):
+    """Mesmo se cada tentativa vier de um IP diferente (proxy confiável), a CONTA do dono trava em 20."""
+    from app.config import get_settings
+
+    monkeypatch.setenv("TRUST_PROXY", "true")
+    get_settings.cache_clear()
+    try:
+        codes = [client.post("/api/auth", json={**OWNER, "password": "chute"}, headers={"x-real-ip": f"10.1.0.{i}"}).status_code for i in range(22)]
+        assert codes[:20] == [401] * 20 and codes[20:] == [429, 429]
+        # com a senha certa também fica bloqueado enquanto durar o ataque
+        assert client.post("/api/auth", json=OWNER, headers={"x-real-ip": "10.1.0.250"}).status_code == 429
+    finally:
+        monkeypatch.setenv("TRUST_PROXY", "false")
+        get_settings.cache_clear()

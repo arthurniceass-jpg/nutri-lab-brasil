@@ -20,7 +20,6 @@ from sqlalchemy import create_engine  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
 from sqlalchemy.pool import StaticPool  # noqa: E402
 
-from app import ratelimit  # noqa: E402
 from app.db import get_db  # noqa: E402
 from app.main import app  # noqa: E402
 from app.models import Base  # noqa: E402
@@ -41,6 +40,5 @@ def client(db_session):
         yield db_session
 
     app.dependency_overrides[get_db] = _get_db
-    ratelimit.reset_all_limiters()
     yield TestClient(app)
     app.dependency_overrides.clear()

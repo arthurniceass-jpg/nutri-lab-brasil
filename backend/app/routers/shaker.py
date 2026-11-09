@@ -44,10 +44,10 @@ def _public(p: Product) -> dict:
 @router.post("/api/shaker/stacks")
 def create_stack(request: Request, body: dict = Depends(json_body), db: Session = Depends(get_db)):
     ip = rl.client_ip(request)
-    wait = rl.shaker_create_by_ip.blocked(ip)
+    wait = rl.shaker_create_by_ip.blocked(db, ip)
     if wait:
         raise rl.too_many(wait)
-    rl.shaker_create_by_ip.add(ip)
+    rl.shaker_create_by_ip.add(db, ip)
 
     raw = body.get("items")
     if not isinstance(raw, list) or not 1 <= len(raw) <= 3:
@@ -96,10 +96,10 @@ def create_stack(request: Request, body: dict = Depends(json_body), db: Session 
 @router.get("/api/shaker/stacks/{code}")
 def read_stack(code: str, request: Request, db: Session = Depends(get_db)):
     ip = rl.client_ip(request)
-    wait = rl.shaker_read_by_ip.blocked(ip)
+    wait = rl.shaker_read_by_ip.blocked(db, ip)
     if wait:
         raise rl.too_many(wait)
-    rl.shaker_read_by_ip.add(ip)
+    rl.shaker_read_by_ip.add(db, ip)
 
     if not _CODE_RE.match(code):
         raise ApiError(404, "Stack não encontrado.")

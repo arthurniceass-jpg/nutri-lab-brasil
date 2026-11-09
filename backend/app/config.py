@@ -44,6 +44,12 @@ class Settings(BaseSettings):
     public_base_url: str = "http://localhost:3000"
 
     @property
+    def serverless(self) -> bool:
+        """Na Vercel cada chamada pode rodar numa máquina diferente: sem pool de conexões fixo."""
+        import os
+        return bool(os.environ.get("VERCEL"))
+
+    @property
     def is_prod(self) -> bool:
         return self.app_env.lower() == "production"
 
@@ -56,7 +62,13 @@ class Settings(BaseSettings):
         parts = urlsplit(url)
         scheme = "postgresql+psycopg" if parts.scheme in ("postgres", "postgresql") else parts.scheme
         query = parse_qsl(parts.query, keep_blank_values=True)
-        pgbouncer = any(k == "pgbouncer" and v.lower() == "true" for k, v in query)
+        # Pooler do Supabase (modo transação) não aceita prepared statements: detecta pela URL do Prisma
+        # (?pgbouncer=true), pela porta 6543 ou pelo host "pooler".
+        pgbouncer = (
+            any(k == "pgbouncer" and v.lower() == "true" for k, v in query)
+            or parts.port == 6543
+            or "pooler." in (parts.hostname or "")
+        )
         kept = [(k, v) for k, v in query if k in _PG_QUERY_ALLOW]
         clean = urlunsplit((scheme, parts.netloc, parts.path, urlencode(kept), ""))
         connect_args: dict = {}

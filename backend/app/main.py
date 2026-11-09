@@ -1,12 +1,11 @@
 """API da Nutri Lab em Python (FastAPI).
 
 Rodar local:   uvicorn app.main:app --reload --port 8000
-Em produção:   uvicorn app.main:app --host 0.0.0.0 --port $PORT   (Railway)
+Na Vercel:     api/index.py importa este `app` (veja backend/README.md)
 """
 from __future__ import annotations
 
 import logging
-from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
@@ -15,9 +14,8 @@ from sqlalchemy import text as sql_text
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from .config import get_settings
-from .db import get_engine
+from .db import ensure_tables, get_engine
 from .http import ApiError, error_response
-from .models import Base, ShakerStack
 from .routers import auth, shaker, webhook
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -45,25 +43,22 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         return response
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+def check_configuration() -> None:
+    """Valida a configuração ao iniciar. Em produção, configuração insegura impede a API de subir
+    (a Vercel não executa 'lifespan', então isso roda na importação do aplicativo)."""
     settings = get_settings()
     problems = settings.validate_for_runtime()
     for p in problems:
         log.error("configuração: %s", p)
     if problems and settings.is_prod:
         raise RuntimeError("Configuração insegura para produção: " + " | ".join(problems))
-    try:  # cria SÓ a tabela do Python; as do Prisma nunca são tocadas
-        Base.metadata.create_all(get_engine(), tables=[ShakerStack.__table__])
-    except Exception as exc:
-        log.error("não consegui preparar a tabela shaker_stacks: %s", exc)
-    yield
 
 
 def create_app() -> FastAPI:
+    check_configuration()
     settings = get_settings()
     docs = None if settings.is_prod else "/docs"
-    app = FastAPI(title="Nutri Lab API", version="0.1.0", lifespan=lifespan,
+    app = FastAPI(title="Nutri Lab API", version="0.1.0",
                   docs_url=docs, redoc_url=None, openapi_url=None if settings.is_prod else "/openapi.json")
 
     app.add_middleware(SecurityMiddleware)
@@ -94,6 +89,7 @@ def create_app() -> FastAPI:
 
     @app.get("/health/db")
     def health_db():
+        ensure_tables()
         with get_engine().connect() as conn:
             conn.execute(sql_text("SELECT 1"))
         return {"status": "ok", "db": "ok"}

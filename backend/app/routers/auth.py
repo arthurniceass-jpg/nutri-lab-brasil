@@ -53,22 +53,22 @@ def _guard(blocked_seconds: int) -> None:
 
 # ---------------- dono ----------------
 @router.post("/api/auth")
-def owner_login(request: Request, response: Response, body: dict = Depends(json_body)):
+def owner_login(request: Request, response: Response, body: dict = Depends(json_body), db: Session = Depends(get_db)):
     email, password = text(body.get("email"), 254), str(body.get("password") or "")[:256]
     if not email or not password:
         raise ApiError(400, "Informe email e senha.")
 
-    ip = rl.client_ip(request)
-    k_pair, k_ip = f"{ip}|{email.lower()}", ip
-    _guard(max(rl.owner_fail_by_ip_email.blocked(k_pair), rl.owner_fail_by_ip.blocked(k_ip)))
+    ip, acct = rl.client_ip(request), email.lower()
+    k_pair = f"{ip}|{acct}"
+    _guard(rl.first_block(db, (rl.owner_fail_by_ip_email, k_pair), (rl.owner_fail_by_ip, ip), (rl.owner_fail_by_account, acct)))
 
     if not verify_owner(email, password):
-        rl.owner_fail_by_ip_email.add(k_pair)
-        rl.owner_fail_by_ip.add(k_ip)
+        for window, key in ((rl.owner_fail_by_ip_email, k_pair), (rl.owner_fail_by_ip, ip), (rl.owner_fail_by_account, acct)):
+            window.add(db, key)
         log.warning("login do dono FALHOU ip=%s", ip)  # nunca registrar a senha
         raise ApiError(401, "Credenciais invalidas.")
 
-    rl.owner_fail_by_ip_email.clear(k_pair)
+    rl.owner_fail_by_ip_email.clear(db, k_pair)
     _set_cookie(response, OWNER_COOKIE, create_owner_token(email.strip().lower()), OWNER_MAX_AGE)
     return {"ok": True}
 
@@ -87,17 +87,17 @@ def customer_login(request: Request, response: Response, body: dict = Depends(js
         raise ApiError(400, "Informe email e senha.")
 
     ip = rl.client_ip(request)
-    k_pair, k_ip = f"{ip}|{email}", ip
-    _guard(max(rl.customer_fail_by_ip_email.blocked(k_pair), rl.customer_fail_by_ip.blocked(k_ip)))
+    k_pair = f"{ip}|{email}"
+    _guard(rl.first_block(db, (rl.customer_fail_by_ip_email, k_pair), (rl.customer_fail_by_ip, ip), (rl.customer_fail_by_account, email)))
 
     customer = db.scalar(select(Customer).where(Customer.email == email))
     # Mesmo tempo de resposta com e sem conta (verify_password usa um hash falso quando não há conta).
     if not verify_password(password, customer.passwordHash if customer else None):
-        rl.customer_fail_by_ip_email.add(k_pair)
-        rl.customer_fail_by_ip.add(k_ip)
+        for window, key in ((rl.customer_fail_by_ip_email, k_pair), (rl.customer_fail_by_ip, ip), (rl.customer_fail_by_account, email)):
+            window.add(db, key)
         raise ApiError(401, "Email ou senha incorretos.")
 
-    rl.customer_fail_by_ip_email.clear(k_pair)
+    rl.customer_fail_by_ip_email.clear(db, k_pair)
     _set_cookie(response, CUSTOMER_COOKIE, create_customer_token(customer.id, customer.name, customer.email), CUSTOMER_MAX_AGE)
     return {"ok": True}
 
@@ -105,8 +105,8 @@ def customer_login(request: Request, response: Response, body: dict = Depends(js
 @router.post("/api/conta/registrar")
 def customer_register(request: Request, response: Response, b: dict = Depends(json_body), db: Session = Depends(get_db)):
     ip = rl.client_ip(request)
-    _guard(rl.register_by_ip.blocked(ip))
-    rl.register_by_ip.add(ip)  # conta toda tentativa: cadastro em massa é abuso
+    _guard(rl.register_by_ip.blocked(db, ip))
+    rl.register_by_ip.add(db, ip)  # conta toda tentativa: cadastro em massa é abuso
 
     name, email = text(b.get("name"), 80), text(b.get("email"), 254).lower()
     password = str(b.get("password") or "")
