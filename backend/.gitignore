@@ -4,3 +4,7 @@ __pycache__/
 .env
 *.db
 .pytest_cache/
+
+.vercel
+.env*
+!.env.example
