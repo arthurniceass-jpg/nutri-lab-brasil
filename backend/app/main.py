@@ -1,7 +1,7 @@
 """API da Nutri Lab em Python (FastAPI).
 
 Rodar local:   uvicorn app.main:app --reload --port 8000
-Na Vercel:     api/index.py importa este `app` (veja backend/README.md)
+Na Vercel:     index.py importa este `app` (veja backend/README.md)
 """
 from __future__ import annotations
 
